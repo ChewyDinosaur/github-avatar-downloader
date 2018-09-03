@@ -54,7 +54,7 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
     throw err;
   }
   // Check to make sure user entered 2 parameters
-  if (userInput.length < 2) {
+  if (!userInput[0] || !userInput[1]) {
     console.log('Error, please enter 2 parameters: <owner> & <repo>');
     return;
   }
