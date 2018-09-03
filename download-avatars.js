@@ -2,7 +2,6 @@ const dotenv = require('dotenv');
 const request = require('request');
 const fs = require('fs');
 const path = require('path');
-const secrets = require('./secrets');
 
 const userInput = process.argv.slice(2);
 
@@ -83,8 +82,11 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
   const parsed = JSON.parse(result);
   
   // Handle error if repo/owner name incorrect, or if token credentials incorrect
-  if (parsed.message) {
-    console.log(`Error: ${parsed.message}`);
+  if (parsed.message === 'Not Found') {
+    console.log('Error: User or repo not found. Please make sure you entered the correct queries.');
+    process.exit();
+  } else {
+    console.log(parsed.message);
     process.exit();
   }
 
