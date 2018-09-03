@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const request = require('request');
 const fs = require('fs');
 const path = require('path');
+const secrets = require('./secrets');
 
 const userInput = process.argv.slice(2);
 
@@ -20,7 +21,7 @@ try {
 }
 // Check contents of the .env file
 if (!userEnv.parsed.GITHUB_TOKEN) {
-  console.log('Error: .env file missing information. Please make sure the file is configured like the following: GITHUB_TOKEN:<your_token>');
+  console.log('Error: .env file missing information. Please make sure the file is configured like the following: GITHUB_TOKEN=<your_token>');
   process.exit();
 }
 
@@ -28,9 +29,10 @@ if (!userEnv.parsed.GITHUB_TOKEN) {
 
 function getRepoContributors(repoOwner, repoName, cb) {
   const options = {
-    url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
+    url: `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`,
     headers: {
-      'User-Agent': process.env.GITHUB_TOKEN
+      'User-Agent': 'request',
+      'Authorization': `token ${process.env.GITHUB_TOKEN}`
     }
   };
   request(options, function(err, res, body) {
@@ -80,9 +82,9 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
 
   const parsed = JSON.parse(result);
   
-  // Check if the provided repo/owner was entered incorrectly
+  // Handle error if repo/owner name incorrect, or if token credentials incorrect
   if (parsed.message) {
-    console.log('Error: User or repo not found. Please check to ensure user and repo were entered correctly');
+    console.log(`Error: ${parsed.message}`);
     process.exit();
   }
 
