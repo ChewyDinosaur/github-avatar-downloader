@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ChewyDinosaur/github-avatar-downloader#readme",
   "dependencies": {
+    "dotenv": "^6.0.0",
     "request": "^2.88.0"
   }
 }
