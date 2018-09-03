@@ -5,18 +5,26 @@ const path = require('path');
 
 const userInput = process.argv.slice(2);
 
-const result = dotenv.config()
+console.log('Welcome to the GitHub Avatar Downloader!');
+
+
+const userEnv = dotenv.config()
+// Ensure .env file has been created and is in the proper directory
 try {
-  if (result.error) {
-    throw result.error
+  if (userEnv.error) {
+    throw userEnv.error
   }
 } catch(err) {
   console.log('Error: .env file not found. Please make sure it has been created and is in the root directory');
   process.exit(err.errno);
 }
+// Check contents of the .env file
+if (!userEnv.parsed.GITHUB_TOKEN) {
+  console.log('Error: .env file missing information. Please make sure the file is configured like the following: GITHUB_TOKEN:<your_token>');
+  process.exit();
+}
 
 
-console.log('Welcome to the GitHub Avatar Downloader!');
 
 function getRepoContributors(repoOwner, repoName, cb) {
   const options = {
@@ -61,27 +69,26 @@ function createFolder(filePath) {
 
 
 getRepoContributors(userInput[0], userInput[1], function(err, result) {
-
   if (err) {
     throw err;
   }
   // Check to make sure user entered 2 parameters
   if (!userInput[0] || !userInput[1]) {
-    console.log('Error, please enter 2 parameters: <owner> & <repo>');
-    return;
+    console.log('Error: Missing argument. Please enter 2 arguments: <owner> & <repo>');
+    process.exit();
   }
 
   const parsed = JSON.parse(result);
   
   // Check if the provided repo/owner was entered incorrectly
   if (parsed.message) {
-    console.log('User or repo not found, please check to ensure user and repo were entered correctly');
-    return;
+    console.log('Error: User or repo not found. Please check to ensure user and repo were entered correctly');
+    process.exit();
   }
 
   parsed.forEach(function(item, i) {
     const filePath = `avatars/${item.login}.jpg`;
-    //downloadImageByURL(item.avatar_url, filePath, i);
+    downloadImageByURL(item.avatar_url, filePath, i);
   });
 });
 
