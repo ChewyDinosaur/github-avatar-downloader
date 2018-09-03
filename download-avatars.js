@@ -2,10 +2,9 @@ const dotenv = require('dotenv');
 const request = require('request');
 const fs = require('fs');
 const path = require('path');
-
 const userInput = process.argv.slice(2);
 
-console.log('Welcome to the GitHub Avatar Downloader!');
+console.log('Running the GitHub Avatar Downloader!');
 
 
 const userEnv = dotenv.config()
@@ -23,7 +22,6 @@ if (!userEnv.parsed.GITHUB_TOKEN) {
   console.log('Error: .env file missing information. Please make sure the file is configured like the following: GITHUB_TOKEN=<your_token>');
   process.exit();
 }
-
 
 
 function getRepoContributors(repoOwner, repoName, cb) {
@@ -68,11 +66,11 @@ function createFolder(filePath) {
 }
 
 
-
 getRepoContributors(userInput[0], userInput[1], function(err, result) {
   if (err) {
     throw err;
   }
+
   // Check to make sure user entered 2 parameters
   if (!userInput[0] || !userInput[1]) {
     console.log('Error: Missing argument. Please enter 2 arguments: <owner> & <repo>');
@@ -85,8 +83,8 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
   if (parsed.message === 'Not Found') {
     console.log('Error: User or repo not found. Please make sure you entered the correct queries.');
     process.exit();
-  } else {
-    console.log(parsed.message);
+  } else if (parsed.message === 'Bad credentials') {
+    console.log('Error: Your GitHub token is incorrect. Double check the .env file.');
     process.exit();
   }
 
