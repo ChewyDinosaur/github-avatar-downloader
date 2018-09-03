@@ -92,6 +92,3 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
   });
 });
 
-
-
-//0348bd036908a822bca5ba39f888b8c58c079f34
