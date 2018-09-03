@@ -18,7 +18,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
   });
 }
 
-function downloadImageByURL(url, filePath) {
+function downloadImageByURL(url, filePath, index) {
   // First create the folder to save images to if it does not exist
   createFolder(filePath);
   
@@ -28,12 +28,10 @@ function downloadImageByURL(url, filePath) {
          throw err;
        })
        .on('response', function (response) {
-         console.log('Response Status Code: ', response.statusCode);
-         console.log('Downloading Image...');
+         console.log(`Downloading Image #${index + 1}...`);
        })
        .pipe(fs.createWriteStream(filePath));     
 }
-downloadImageByURL('https://avatars2.githubusercontent.com/u/2741?v=3&s=466', 'avatars/kvirani.jpg');
 
 function createFolder(filePath) {
   const dirName = path.dirname(filePath);
@@ -47,12 +45,14 @@ function createFolder(filePath) {
   }
 }
 
-/*
+
 getRepoContributors("jquery", "jquery", function(err, result) {
-  console.log("Errors:", err);
+  if (err) {
+    throw err;
+  }
   const parsed = JSON.parse(result);
-  parsed.forEach(function(item) {
-    console.log(item.avatar_url);
+  parsed.forEach(function(item, i) {
+    const filePath = `avatars/${item.login}.jpg`;
+    downloadImageByURL(item.avatar_url, filePath, i);
   });
 });
-*/
