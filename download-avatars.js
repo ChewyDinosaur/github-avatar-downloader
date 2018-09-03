@@ -33,6 +33,7 @@ function downloadImageByURL(url, filePath, index) {
        .pipe(fs.createWriteStream(filePath));     
 }
 
+// Helper function to create directory if it doesn't exist
 function createFolder(filePath) {
   const dirName = path.dirname(filePath);
   if (!fs.existsSync(dirName)) {
@@ -46,7 +47,9 @@ function createFolder(filePath) {
 }
 
 
-getRepoContributors("jquery", "jquery", function(err, result) {
+const userInput = process.argv.slice(2);
+
+getRepoContributors(userInput[0], userInput[1], function(err, result) {
   if (err) {
     throw err;
   }
