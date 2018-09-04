@@ -63,7 +63,8 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
         // Add the repo to the object if doesnt exist or increase starcount
         if (!reposAndStars[item.name]) {
           reposAndStars[item.name] = {
-            'starCount': 1
+            'starCount': 1,
+            'creator': item.owner.login
           }
         } else {
           reposAndStars[item.name].starCount++;
@@ -71,17 +72,18 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
       });
     });
   });
+
   // Wait 4 second for asynchronous functions to complete
   setTimeout(function() {
     let reposAndStarsArray = [];
     for (var i in reposAndStars) {
-      reposAndStarsArray.push([i, reposAndStars[i].starCount]);
+      reposAndStarsArray.push([i, reposAndStars[i].starCount, reposAndStars[i].creator]);
     }
     reposAndStarsArray.sort(function(a, b) {
       return b[1] - a[1];
     });
     for (let i = 0; i < 5; i++) {
-      console.log(reposAndStarsArray[i]);
+      console.log(`[ ${reposAndStarsArray[i][1]} stars ] ${reposAndStarsArray[i][2]} / ${reposAndStarsArray[i][0]}`);
     } 
   }, 3000);
 });
