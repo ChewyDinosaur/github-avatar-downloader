@@ -60,11 +60,28 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
       parsedInfo = JSON.parse(userStarred);
       // loop through each of the current users starred repos
       parsedInfo.forEach(function(item) {
+        // Add the repo to the object if doesnt exist or increase starcount
         if (!reposAndStars[item.name]) {
-          
+          reposAndStars[item.name] = {
+            'starCount': 1
+          }
+        } else {
+          reposAndStars[item.name].starCount++;
         }
       });
     });
   });
-
+  // Wait 4 second for asynchronous functions to complete
+  setTimeout(function() {
+    let reposAndStarsArray = [];
+    for (var i in reposAndStars) {
+      reposAndStarsArray.push([i, reposAndStars[i].starCount]);
+    }
+    reposAndStarsArray.sort(function(a, b) {
+      return b[1] - a[1];
+    });
+    for (let i = 0; i < 5; i++) {
+      console.log(reposAndStarsArray[i]);
+    } 
+  }, 3000);
 });
