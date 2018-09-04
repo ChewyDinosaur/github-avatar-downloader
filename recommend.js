@@ -52,7 +52,24 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
     throw err;
   }
 
+  // Check to make sure user entered 2 parameters
+  if (!userInput[0] || !userInput[1]) {
+    console.log('Error: Missing argument. Please enter 2 arguments: <owner> & <repo>');
+    process.exit();
+  }
+
   parsed = JSON.parse(result);
+
+  // Handle error if repo/owner name incorrect, or if token credentials incorrect
+  if (parsed.message === 'Not Found') {
+    console.log('Error: User or repo not found. Please make sure you entered the correct queries.');
+    process.exit();
+  } else if (parsed.message === 'Bad credentials') {
+    console.log('Error: Your GitHub token is incorrect. Double check the .env file.');
+    process.exit();
+  }
+
+
   parsed.forEach(function(user) {
     const starredURL = `https://api.github.com/users/${user.login}/starred`;
     // request the current user's starred repos
@@ -73,7 +90,7 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
     });
   });
 
-  // Wait 4 second for asynchronous functions to complete
+  // Wait 3 second for asynchronous functions to complete
   setTimeout(function() {
     let reposAndStarsArray = [];
     for (var i in reposAndStars) {
