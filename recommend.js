@@ -102,5 +102,5 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
     for (let i = 0; i < 5; i++) {
       console.log(`[ ${reposAndStarsArray[i][1]} stars ] ${reposAndStarsArray[i][2]} / ${reposAndStarsArray[i][0]}`);
     } 
-  }, 3000);
+  }, 300);
 });
