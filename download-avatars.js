@@ -38,9 +38,6 @@ function getRepoContributors(repoOwner, repoName, cb) {
 }
 
 function downloadImageByURL(url, filePath, index) {
-  // First create the folder to save images to if it does not exist
-  createFolder(filePath);
-  
   // Send the request and download the images
   request.get(url)
        .on('error', function (err) {
@@ -54,9 +51,8 @@ function downloadImageByURL(url, filePath, index) {
 
 // Helper function to create directory if it doesn't exist
 function createFolder(filePath) {
-  const dirName = path.dirname(filePath);
-  if (!fs.existsSync(dirName)) {
-    fs.mkdir(dirName, function(err) {
+  if (!fs.existsSync('avatars')) {
+    fs.mkdir('avatars', function(err) {
       if (err) {
         throw err;
       }
@@ -70,6 +66,9 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
   if (err) {
     throw err;
   }
+
+  // First create the folder to save images to if it does not exist
+  createFolder();
 
   // Check to make sure user entered 2 parameters
   if (!userInput[0] || !userInput[1]) {
@@ -88,9 +87,9 @@ getRepoContributors(userInput[0], userInput[1], function(err, result) {
     process.exit();
   }
 
-  parsed.forEach(function(item, i) {
-    const filePath = `avatars/${item.login}.jpg`;
-    downloadImageByURL(item.avatar_url, filePath, i);
+  parsed.forEach(function(user, i) {
+    const filePath = `avatars/${user.login}.jpg`;
+    downloadImageByURL(user.avatar_url, filePath, i);
   });
 });
 
